@@ -92,6 +92,10 @@ jobs:
           echo 'root:Ci-only-pass-4821' | chpasswd
           [ "$(curl -sk -o /dev/null -w '%{http_code}' -u root:Ci-only-pass-4821 https://127.0.0.1:9090/cockpit/login)" = 403 ]
           EOF
+      - name: Show the login logs
+        if: failure()
+        run: |
+          sudo podman exec circuit-cockpit sh -c 'journalctl --no-pager -n 80 _COMM=cockpit-session _COMM=cockpit-ws _COMM=unix_chkpwd; tail -n 40 /var/log/secure 2>/dev/null; cat /etc/pam.d/cockpit' || true
       - name: Clean up
         if: always()
         working-directory: examples/local
