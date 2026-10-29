@@ -78,7 +78,7 @@ jobs:
       # disallowed-users.
       - name: Check the socket, the login page and a login
         run: |
-          sudo podman exec -i circuit-cockpit sh -eu <<'EOF'
+          sudo podman exec -i circuit-cockpit sh -eux <<'EOF'
           systemctl is-active cockpit.socket
           systemctl is-enabled cockpit.socket
           command -v curl >/dev/null || dnf -y -q install curl || { apt-get update -q && apt-get install -y -q curl; }
