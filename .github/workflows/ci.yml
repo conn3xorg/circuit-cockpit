@@ -67,15 +67,19 @@ jobs:
           # sandboxing, which needs namespaces.
           PODMAN: sudo podman
         run: ./up.sh
+      # The test users exist only in CI, and before Cockpit starts: on Rocky,
+      # Cockpit's sandboxed login can't see an account added after it began.
+      - name: Add the test users
+        run: |
+          sudo podman exec circuit-cockpit sh -eu -c "useradd -m cockpittest && echo 'cockpittest:Ci-only-pass-4821' | chpasswd && echo 'root:Ci-only-pass-4821' | chpasswd"
       - name: Apply, then plan again with no changes
         working-directory: examples/local
         run: |
           conn3x init
           conn3x apply -auto-approve
           conn3x plan -detailed-exitcode
-      # The test user exists only in CI. Cockpit logs in with HTTP basic auth
-      # on a GET to /cockpit/login, and turns root away through
-      # disallowed-users.
+      # Cockpit logs in with HTTP basic auth on a GET to /cockpit/login, and
+      # turns root away through disallowed-users.
       - name: Check the socket, the login page and a login
         run: |
           sudo podman exec -i circuit-cockpit sh -eux <<'EOF'
@@ -85,11 +89,8 @@ jobs:
           curl -sSfk https://127.0.0.1:9090/ -o /tmp/login.html
           grep -q 'id="login"' /tmp/login.html
           grep -q 'Conn3x test box' /tmp/login.html
-          useradd -m cockpittest
-          echo 'cockpittest:Ci-only-pass-4821' | chpasswd
           [ "$(curl -sk -o /dev/null -w '%{http_code}' -u cockpittest:Ci-only-pass-4821 https://127.0.0.1:9090/cockpit/login)" = 200 ]
           [ "$(curl -sk -o /dev/null -w '%{http_code}' -u cockpittest:wrong https://127.0.0.1:9090/cockpit/login)" = 401 ]
-          echo 'root:Ci-only-pass-4821' | chpasswd
           [ "$(curl -sk -o /dev/null -w '%{http_code}' -u root:Ci-only-pass-4821 https://127.0.0.1:9090/cockpit/login)" = 403 ]
           EOF
       - name: Show the login logs
