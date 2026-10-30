@@ -67,8 +67,14 @@ jobs:
           # sandboxing, which needs namespaces.
           PODMAN: sudo podman
         run: ./up.sh
-      # The test users exist only in CI, and before Cockpit starts: on Rocky,
-      # Cockpit's sandboxed login can't see an account added after it began.
+      # Ubuntu's AppArmor profile for unix_chkpwd also confines the one in a
+      # container, and doesn't grant the capability that reads Rocky's
+      # mode-0000 /etc/shadow, so the Rocky container can't check passwords.
+      # A Rocky 10 host logs in fine: checked on a DigitalOcean droplet on
+      # 2026-10-29.
+      - name: Unload the runner's unix_chkpwd AppArmor profile
+        run: sudo apparmor_parser -R /etc/apparmor.d/unix-chkpwd
+      # The test users exist only in CI.
       - name: Add the test users
         run: |
           sudo podman exec circuit-cockpit sh -eu -c "useradd -m cockpittest && echo 'cockpittest:Ci-only-pass-4821' | chpasswd && echo 'root:Ci-only-pass-4821' | chpasswd"
