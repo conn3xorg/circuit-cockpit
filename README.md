@@ -10,7 +10,7 @@ You pick the port, the address, the extra pages and the certificate once, and th
 
 ```hcl
 module "cockpit" {
-  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.1.1"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +52,7 @@ module "certbot" {
 }
 
 module "cockpit" {
-  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.1.1"
   # ...
   tls_certificate = "/etc/letsencrypt/live/cockpit.example.com/fullchain.pem"
   tls_key         = "/etc/letsencrypt/live/cockpit.example.com/privkey.pem"
