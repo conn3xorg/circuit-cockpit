@@ -39,7 +39,7 @@ locals {
   # Extra pages each distribution doesn't package. On Rocky Linux and RHEL
   # 10, cockpit-system provides cockpit-networkmanager, -selinux, -kdump
   # and -sosreport, which dnf accepts by those names.
-  os_key = { debian = "debian", ubuntu = "ubuntu", fedora = "fedora", rocky = "el", almalinux = "el", rhel = "el", centos = "el" }
+  os_key = { debian = "debian", ubuntu = "ubuntu", fedora = "fedora", rocky = "el", almalinux = "el", rhel = "el" }
   not_packaged = {
     debian = ["cockpit-kdump", "cockpit-ostree", "cockpit-pcp", "cockpit-selinux"]
     ubuntu = ["cockpit-kdump", "cockpit-ostree", "cockpit-selinux"]
