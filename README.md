@@ -138,7 +138,7 @@ On Rocky Linux and RHEL 10, `cockpit-networkmanager`, `-selinux`, `-kdump` and `
 
 ## Requirements
 
-Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror the host can reach. On Debian, the host also needs to reach `deb.debian.org` for backports, unless `backports` is off.
+Requires Conn3x v0.27.0 or later and systemd on each host, with a package mirror the host can reach. On Debian, the host also needs to reach `deb.debian.org` for backports, unless `backports` is off.
 
 ## Tested on
 
