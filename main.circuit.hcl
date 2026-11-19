@@ -145,9 +145,9 @@ circuit "cockpit_rpm" {
   # moved with -m.
   step "port" {
     for_each = var.port != 9090 ? [tostring(var.port)] : []
-    command {
-      command = "semanage port -a -t websm_port_t -p tcp ${item.value} 2>/dev/null || semanage port -m -t websm_port_t -p tcp ${item.value}"
-      unless  = "! selinuxenabled || semanage port -l | grep -E '^websm_port_t ' | grep -Eq '[ ,]${item.value}(,|$)'"
+    selinux_port {
+      port   = item.value
+      setype = "websm_port_t"
     }
   }
 }
@@ -171,7 +171,7 @@ circuit "cockpit" {
     depends_on = [
       conn3x_command.cockpit_deb__install,
       conn3x_package.cockpit_rpm__packages,
-      conn3x_command.cockpit_rpm__port,
+      conn3x_selinux_port.cockpit_rpm__port,
     ]
     notify = [handler.restart]
   }
