@@ -212,8 +212,8 @@ circuit "cockpit" {
   }
 
   step "daemon_reload" {
-    command {
-      command  = "systemctl daemon-reload"
+    service_action {
+      action   = "daemon-reload"
       triggers = { listen = conn3x_file.cockpit__listen[each.key].revision }
     }
   }
